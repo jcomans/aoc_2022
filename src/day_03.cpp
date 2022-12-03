@@ -17,27 +17,35 @@ auto to_priority(char element)
 
 auto create_set(auto span) { return Set{std::begin(span), std::end(span)}; }
 
+auto set_intersection(auto set1, auto set2)
+{
+    Set result;
+    std::ranges::set_intersection(set1, set2, std::inserter(result, result.end()));
+    return result;
+}
+
 auto badge_total_addition(auto data)
 {
     static auto count = 0;
-    static auto accum = Set{};
+    static auto intersection = Set{};
 
+    // There's no intersection to be calculated for the first line in each group of three
+    intersection = intersection.size() ? set_intersection(intersection, data) : data;
     count++;
 
-    Set res;
-    switch (count)
+    // When we are at the third line, the intersection should be a single element and we can return
+    // its priority
+    if (count == 3)
     {
-    case 1: accum = data; return 0;
-    case 2:
-        std::ranges::set_intersection(accum, data, std::inserter(res, res.end()));
-        accum = res;
-        return 0;
-    case 3:
-        std::ranges::set_intersection(accum, data, std::inserter(res, res.end()));
         count = 0;
-        accum.clear();
-        return to_priority(*res.begin());
+
+        assert(intersection.size() == 1);
+        const auto value = *intersection.begin();
+        intersection.clear();
+
+        return to_priority(value);
     }
+
     return 0;
 }
 
