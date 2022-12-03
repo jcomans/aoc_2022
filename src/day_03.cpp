@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <iostream>
 #include <set>
+#include <span>
 #include <vector>
 
 #include <cassert>
@@ -14,14 +15,9 @@ auto to_priority(char element)
     return std::islower(element) ? (1 + element - 'a') : (27 + element - 'A');
 }
 
-template <typename T>
-auto create_set(T& container)
-{
-    return Set{std::begin(container), std::end(container)};
-}
+auto create_set(auto span) { return Set{std::begin(span), std::end(span)}; }
 
-template <typename T>
-int badge_total_addition(const T& data)
+auto badge_total_addition(auto data)
 {
     static auto count = 0;
     static auto accum = Set{};
@@ -45,6 +41,16 @@ int badge_total_addition(const T& data)
     return 0;
 }
 
+auto total_addition(auto front, auto back)
+{
+    Set result;
+    std::ranges::set_intersection(front, back, std::inserter(result, result.end()));
+
+    assert(result.size() == 1);
+
+    return to_priority(*result.begin());
+}
+
 int main()
 {
     jc::File file{"day_03.txt"};
@@ -54,21 +60,14 @@ int main()
 
     for (const auto& line: file)
     {
-        const auto compartment_size = line.length() / 2;
+        const auto full_contents    = std::span(line.str());
+        const auto compartment_size = full_contents.size() / 2;
 
-        auto front_compartement = line.str().substr(0, compartment_size);
-        auto back_compartement  = line.str().substr(compartment_size);
+        const auto front_set = create_set(full_contents.subspan(0, compartment_size));
+        const auto back_set  = create_set(full_contents.subspan(compartment_size));
+        const auto full_set  = create_set(full_contents);
 
-        auto front_set = create_set(front_compartement);
-        auto back_set  = create_set(back_compartement);
-        auto full_set  = create_set(line.str());
-
-        Set result;
-        std::ranges::set_intersection(front_set, back_set, std::inserter(result, result.end()));
-
-        assert(result.size() == 1);
-        total += to_priority(*result.begin());
-
+        total += total_addition(front_set, back_set);
         badge_total += badge_total_addition(full_set);
     }
 
