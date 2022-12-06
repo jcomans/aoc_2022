@@ -1,20 +1,31 @@
+#include <charconv>
+#include <chrono>
 #include <deque>
 #include <iostream>
-#include <string>
 #include <sstream>
+#include <string>
+#include <string_view>
 #include <vector>
 
 #include "jc_file.hpp"
 
 int main()
 {
-    jc::File file{"day_05.txt"};
+    //jc::File file{"day_05.txt"};
+    jc::File file{"aoc_2022_day05_large_input.txt"};
 
     bool in_header = true;
 
-    std::vector<std::deque<char>> stacks(9);
-    std::vector<std::deque<char>> stacks_2(9);
+    //std::vector<std::deque<char>> stacks(9);
+    //std::vector<std::deque<char>> stacks_2(9);
 
+    std::vector<std::vector<char>> stacks(9);
+    std::vector<std::vector<char>> stacks_2(9);
+
+    std::cout << "Reading stacks" << std::endl;
+
+    const auto start_time = std::chrono::high_resolution_clock::now();
+    auto counter = 0;
     for (auto& line: file)
     {
         if (in_header)
@@ -23,6 +34,7 @@ int main()
             {
                 in_header = false;
                 stacks_2  = stacks;
+                std::cout << "\nStarting command parsing" << std::endl;
             }
                 
 
@@ -31,16 +43,26 @@ int main()
                 const auto character = line.str().at(i);
 
                 if (!std::isdigit(character) && character != ' ')
-                    stacks.at(n).push_front(character);
+                    stacks.at(n).insert(stacks.at(n).begin(), character);
             }
         }
         else
         {
-            std::stringstream ss(line.str());
-            std::string dummy1, dummy2, dummy3;
+            const auto cmd = std::string_view(line.str());
             int count, src, dst;
-            ss >> dummy1 >> count >> dummy2 >> src >> dummy3 >> dst;
-            std::cout << count << "\t" << src << "->" << dst << "\n";
+
+            const auto start_cnt = 5;
+            const auto end_cnt   = cmd.find(' ', start_cnt);
+            std::from_chars(&cmd.data()[start_cnt], &cmd.data()[end_cnt], count);
+
+            const auto start_src = cmd.find(' ', end_cnt + 1) + 1;
+            const auto end_src   = cmd.find(' ', start_src);
+            std::from_chars(&cmd.data()[start_src], &cmd.data()[end_src], src);
+
+            const auto start_dst = cmd.find(' ', end_src + 1) + 1;
+            const auto end_dst   = cmd.find(' ', start_dst);
+            std::from_chars(&cmd.data()[start_dst], &cmd.data()[end_dst], dst);
+
 
             for (auto i = 0; i < count; ++i)
             {
@@ -53,7 +75,18 @@ int main()
             std::move(src_stack.end() - count, src_stack.end(), std::back_inserter(dst_stack));
             src_stack.erase(src_stack.end() - count, src_stack.end());
         }
+
+        ++counter;
+        if (counter > 1000) {
+            std::cout << ".";
+            counter = 0;
+        }
     }
+    std::cout << "\n";
+    const auto delta = std::chrono::high_resolution_clock::now() - start_time;
+
+    std::cout << "Time: " << std::chrono::duration_cast<std::chrono::seconds>(delta).count()
+              << " s\n";
     
     std::cout << "CrateMover 9000\n";
     for (const auto& stack: stacks)
