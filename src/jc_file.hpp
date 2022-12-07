@@ -1,6 +1,7 @@
 #ifndef JC_FILE
 #define JC_FILE
 
+#include <iterator>
 #include <fstream>
 #include <string>
 
