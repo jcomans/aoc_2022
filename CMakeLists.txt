@@ -4,6 +4,12 @@ project(advent_2022 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 
+option(ENABLE_GPROF "Enable gprof profiling")
+if(${ENABLE_GPROF})
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg") 
+endif()
+
 add_executable(day_01 src/day_01.cpp)
 add_executable(day_02 src/day_02.cpp)
 add_executable(day_03 src/day_03.cpp)
