@@ -5,6 +5,7 @@
 
 #include <charconv>
 #include <string_view>
+#include <vector>
 
 namespace jc
 {
@@ -18,6 +19,27 @@ namespace jc
         assert(res.ec == std::errc{});
 
         return val;
+    }
+
+    inline std::vector<std::string_view> split(std::string_view input, std::string_view delim)
+    {
+        std::vector<std::string_view> result;
+
+        auto search_start = size_t{0};
+        auto next_split   = input.find(delim, search_start);
+
+        while (next_split != input.npos)
+        {
+            result.emplace_back(input.substr(search_start, next_split-search_start));
+
+            search_start = next_split + delim.length();
+
+            next_split = input.find(delim, search_start);
+        }
+
+        result.emplace_back(input.substr(search_start));
+
+        return result;
     }
 } // namespace jc
 

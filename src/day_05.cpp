@@ -1,7 +1,5 @@
-#include <deque>
-#include <iostream>
-#include <string>
 #include <sstream>
+#include <string>
 #include <vector>
 
 #include "jc.hpp"
@@ -12,8 +10,8 @@ int main()
 
     bool in_header = true;
 
-    std::vector<std::deque<char>> stacks(9);
-    std::vector<std::deque<char>> stacks_2(9);
+    std::vector<std::string> stacks_9000(9);
+    std::vector<std::string> stacks_9001(9);
 
     for (auto& line: file)
     {
@@ -21,52 +19,54 @@ int main()
         {
             if (line.str().empty())
             {
-                in_header = false;
-                stacks_2  = stacks;
+                in_header   = false;
+                stacks_9001 = stacks_9000;
             }
-                
 
             for (auto i = 1, n = 0; i < line.str().length(); i += 4, ++n)
             {
                 const auto character = line.str().at(i);
 
                 if (!std::isdigit(character) && character != ' ')
-                    stacks.at(n).push_front(character);
+                    stacks_9000.at(n).insert(0, 1, character);
             }
         }
         else
         {
-            std::stringstream ss(line.str());
-            std::string dummy1, dummy2, dummy3;
-            int count, src, dst;
-            ss >> dummy1 >> count >> dummy2 >> src >> dummy3 >> dst;
-            std::cout << count << "\t" << src << "->" << dst << "\n";
+            const auto tokens = jc::split(line.str(), " ");
 
+            const auto count = jc::to<int>(tokens[1]);
+            const auto src   = jc::to<int>(tokens[3]) - 1;
+            const auto dst   = jc::to<int>(tokens[5]) - 1;
+
+            // Move one by one for the 9000
             for (auto i = 0; i < count; ++i)
             {
-                stacks.at(dst - 1).push_back(stacks.at(src - 1).back());
-                stacks.at(src - 1).pop_back();
+                auto& src_9000 = stacks_9000.at(src);
+                auto& dst_9000 = stacks_9000.at(dst);
+
+                dst_9000.push_back(src_9000.back());
+                src_9000.pop_back();
             }
 
-            auto& src_stack = stacks_2.at(src - 1);
-            auto& dst_stack = stacks_2.at(dst - 1);
+            // Move in bulk for the 9001
+            auto& src_stack = stacks_9001.at(src);
+            auto& dst_stack = stacks_9001.at(dst);
             std::move(src_stack.end() - count, src_stack.end(), std::back_inserter(dst_stack));
             src_stack.erase(src_stack.end() - count, src_stack.end());
         }
     }
 
     std::string mover_9000;
-    for (const auto& stack: stacks)
-    {
-            mover_9000 += stack.back();
-    }
+    std::ranges::transform(stacks_9000, std::back_inserter(mover_9000),
+                           [](const auto& v) { return v.back(); });
+
     std::cout << "CrateMover 9000: " << mover_9000 << "\n";
 
     std::string mover_9001;
-    for (const auto& stack: stacks_2)
-    {
-            mover_9001 += stack.back();
-    }
+    std::ranges::transform(stacks_9001, std::back_inserter(mover_9001),
+                           [](const auto& v) { return v.back(); });
+
     std::cout << "CrateMover 9001: " << mover_9001 << "\n";
 
     auto check = jc::Check{};
