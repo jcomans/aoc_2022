@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-#include "jc_file.hpp"
+#include "jc.hpp"
 
 namespace
 {
@@ -62,4 +62,11 @@ int main()
 
     std::cout << "My first score: " << first_score << "\n";
     std::cout << "My second score: " << second_score << "\n";
+
+    auto check = jc::Check{};
+
+    check.add(first_score == 14827);
+    check.add(second_score == 13889);
+
+    return check.returnValue();
 }

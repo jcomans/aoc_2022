@@ -2,7 +2,7 @@
 #include <iostream>
 #include <numeric>
 
-#include "jc_file.hpp"
+#include "jc.hpp"
 
 int main()
 {
@@ -40,7 +40,15 @@ int main()
         }
     }
 
+    const auto multi_maximum = std::accumulate(std::begin(top_three), std::end(top_three), 0);
+
     std::cout << "Single max:\t" << global_maximum << "\n";
-    std::cout << "Multi max:\t" << std::accumulate(std::begin(top_three), std::end(top_three), 0)
-              << "\n";
+    std::cout << "Multi max:\t" << multi_maximum << "\n";
+
+    auto check = jc::Check{};
+
+    check.add(global_maximum == 69281);
+    check.add(multi_maximum == 201524);
+
+    return check.returnValue();
 }

@@ -1,3 +1,5 @@
+#include "jc.hpp"
+
 #include "jc_file.hpp"
 #include "jc_string.hpp"
 
@@ -78,11 +80,16 @@ int main()
     std::cout << "Strength: " << cpu.strength() << "\n";
     std::cout << cpu.screen() << "\n";
 
-    assert(cpu.strength() == 13860);
-    assert(cpu.screen() == R"(###..####.#..#.####..##....##..##..###..
+
+    auto check = jc::Check{};
+
+    check.add(cpu.strength() == 13860);
+    check.add(cpu.screen() == R"(###..####.#..#.####..##....##..##..###..
 #..#....#.#..#.#....#..#....#.#..#.#..#.
 #..#...#..####.###..#.......#.#....###..
 ###...#...#..#.#....#.##....#.#....#..#.
 #.#..#....#..#.#....#..#.#..#.#..#.#..#.
 #..#.####.#..#.#.....###..##...##..###..)");
+
+    return check.returnValue();
 }

@@ -1,4 +1,4 @@
-#include "jc_file.hpp"
+#include "jc.hpp"
 
 #include <cassert>
 
@@ -17,9 +17,9 @@ void scan(const Grid& grid, int rs, int re, int ri, int cs, int ce, int ci, auto
     }
 }
 
-int is_visible(const Grid& grid, size_t r, size_t c)
+int is_visible(const Grid& grid, int r, int c)
 {
-    const auto grid_size = grid.size();
+    const auto grid_size = static_cast<int>(grid.size());
 
     if (r == 0 || r == grid_size - 1 || c == 0 || c == grid_size - 1)
         return 1;
@@ -56,9 +56,9 @@ int is_visible(const Grid& grid, size_t r, size_t c)
     return visible;
 }
 
-int get_scenic_score(const Grid& grid, size_t r, size_t c)
+int get_scenic_score(const Grid& grid, int r, int c)
 {
-    const auto grid_size = grid.size();
+    const auto grid_size = static_cast<int>(grid.size());
     if (r == 0 || r == grid_size - 1 || c == 0 || c == grid_size - 1)
         return 0;
 
@@ -129,6 +129,10 @@ int main()
     std::cout << "Visible trees: " << visible_trees << "\n";
     std::cout << "Max scenic score: " << max_score << "\n";
 
-    assert(visible_trees == 1560);
-    assert(max_score == 252000);
+    auto check = jc::Check{};
+    
+    check.add(visible_trees == 1560);
+    check.add(max_score == 252000);
+
+    return check.returnValue();
 }
