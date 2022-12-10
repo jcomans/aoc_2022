@@ -1,5 +1,12 @@
 function(ADD_DAY NAME)
   add_executable(${NAME} ${NAME}.cpp)
+
+  target_link_libraries(${NAME}
+    PUBLIC
+    project_options
+    project_warnings
+    )
+  
 endfunction()
 
 add_day(day_01)

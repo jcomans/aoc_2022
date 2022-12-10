@@ -99,7 +99,7 @@ int main()
             tail.follow(head);
 
             tails.front().follow(head);
-            for (auto i = 1; i < tails.size(); ++i) tails.at(i).follow(tails.at(i - 1));
+            for (auto j = 1; j < tails.size(); ++j) tails.at(j).follow(tails.at(j - 1));
 
             tail_visited.insert(tail);
             long_tail_visited.insert(tails.back());
