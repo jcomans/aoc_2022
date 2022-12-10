@@ -5,7 +5,7 @@
 
 #include <cassert>
 
-#include "jc_file.hpp"
+#include "jc.hpp"
 
 auto split(std::string_view data, char split_token)
 {
@@ -64,5 +64,12 @@ int main()
     }
 
     std::cout << "Contained:\t" << contained << "\n";
-    std::cout << "Overlap:\t" << overlap << "\n"; // 417 too low
+    std::cout << "Overlap:\t" << overlap << "\n";
+
+    auto check = jc::Check{};
+
+    check.add(contained == 513);
+    check.add(overlap == 878);
+
+    return check.returnValue();
 }

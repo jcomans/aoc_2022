@@ -6,7 +6,12 @@ function(ADD_DAY NAME)
     project_options
     project_warnings
     )
-  
+
+  add_test(NAME ${NAME}
+    COMMAND ${NAME}
+    WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/data"
+    )
+
 endfunction()
 
 add_day(day_01)

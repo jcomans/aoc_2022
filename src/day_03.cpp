@@ -6,7 +6,7 @@
 
 #include <cassert>
 
-#include "jc_file.hpp"
+#include "jc.hpp"
 
 using Set = std::set<char>;
 
@@ -81,4 +81,11 @@ int main()
 
     std::cout << "Total:\t\t" << total << "\n";
     std::cout << "Badge total:\t" << badge_total << "\n";
+
+    auto check = jc::Check{};
+
+    check.add(total == 7990);
+    check.add(badge_total == 2602);
+
+    return check.returnValue();
 }

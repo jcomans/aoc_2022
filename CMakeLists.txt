@@ -38,4 +38,6 @@ endif()
 
 project_options(WARNINGS_AS_ERRORS)
 
+enable_testing()
+
 add_subdirectory(src)

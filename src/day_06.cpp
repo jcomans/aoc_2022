@@ -3,24 +3,20 @@
 #include <set>
 #include <string_view>
 
-#include "jc_file.hpp"
+#include "jc.hpp"
 
 int main()
 {
-     jc::File file{"day_06.txt"};
-    //const auto file = {"mjqjpqmgbljsphdztnvjfqwrcgsmlb", "bvwbjplbgvbhsrlpgdmjqwftvncz",
-    //                   "nppdvjthqldpwncqszvftbrmjlhg", "nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg",
-    //                   "zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw"};
+    jc::File file{"day_06.txt"};
 
-
+    auto packet_position = 0;
+    auto message_postion = 0;
 
     for (auto& line: file)
     {
-        // As long as the line is not empty, we keep adding to the current elf's calories
-
         const auto data = std::string_view{line.str()};
 
-            auto packet_found = false;
+        auto packet_found = false;
         auto msg_found    = false;
 
         for (auto i = 0; i < data.length() - 4; ++i)
@@ -29,8 +25,8 @@ int main()
             const auto packetset = std::set(std::begin(packetstr), std::end(packetstr));
             if (packetset.size() == 4 && !packet_found)
             {
-                std::cout << "Packet Position: " << i + 4 << "\n";
-                packet_found = true;
+                packet_position = i + 4;
+                packet_found    = true;
             }
 
             if (i < data.length() - 14 && !msg_found)
@@ -39,8 +35,8 @@ int main()
                 const auto msgset = std::set(std::begin(msgstr), std::end(msgstr));
                 if (msgset.size() == 14)
                 {
-                    std::cout << "Message Position: " << i + 14 << "\n";
-                    msg_found = true;
+                    message_postion = i + 14;
+                    msg_found       = true;
                 }
             }
 
@@ -48,4 +44,14 @@ int main()
                 break;
         }
     }
+
+    std::cout << "Packet Position: " << packet_position << "\n";
+    std::cout << "Message Position: " << message_postion << "\n";
+
+    auto check = jc::Check{};
+
+    check.add(packet_position == 1850);
+    check.add(message_postion == 2823);
+
+    return check.returnValue();
 }

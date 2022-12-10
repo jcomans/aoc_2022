@@ -4,7 +4,7 @@
 #include <sstream>
 #include <vector>
 
-#include "jc_file.hpp"
+#include "jc.hpp"
 
 int main()
 {
@@ -54,19 +54,25 @@ int main()
             src_stack.erase(src_stack.end() - count, src_stack.end());
         }
     }
-    
-    std::cout << "CrateMover 9000\n";
+
+    std::string mover_9000;
     for (const auto& stack: stacks)
     {
-        if (stack.size())
-            std::cout << stack.back();
+            mover_9000 += stack.back();
     }
+    std::cout << "CrateMover 9000: " << mover_9000 << "\n";
 
-    std::cout << "\nCrateMover 9001\n";
+    std::string mover_9001;
     for (const auto& stack: stacks_2)
     {
-        if (stack.size())
-            std::cout << stack.back();
+            mover_9001 += stack.back();
     }
-    std::cout << "\n";
+    std::cout << "CrateMover 9001: " << mover_9001 << "\n";
+
+    auto check = jc::Check{};
+
+    check.add(mover_9000 == "RFFFWBPNS");
+    check.add(mover_9001 == "CQQBBJFCS");
+
+    return check.returnValue();
 }

@@ -1,5 +1,4 @@
-#include "jc_file.hpp"
-#include "jc_string.hpp"
+#include "jc.hpp"
 
 #include <cassert>
 
@@ -110,6 +109,10 @@ int main()
     std::cout << "Tail visited: " << tail_visited.size() << "\n";
     std::cout << "Long tail visited: " << long_tail_visited.size() << "\n";
 
-    assert(tail_visited.size() == 6030);
-    assert(long_tail_visited.size() == 2545);
+    auto check = jc::Check{};
+    
+    check.add(tail_visited.size() == 6030);
+    check.add(long_tail_visited.size() == 2545);
+
+    return check.returnValue();
 }

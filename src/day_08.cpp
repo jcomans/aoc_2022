@@ -1,4 +1,4 @@
-#include "jc_file.hpp"
+#include "jc.hpp"
 
 #include <cassert>
 
@@ -129,6 +129,10 @@ int main()
     std::cout << "Visible trees: " << visible_trees << "\n";
     std::cout << "Max scenic score: " << max_score << "\n";
 
-    assert(visible_trees == 1560);
-    assert(max_score == 252000);
+    auto check = jc::Check{};
+    
+    check.add(visible_trees == 1560);
+    check.add(max_score == 252000);
+
+    return check.returnValue();
 }
