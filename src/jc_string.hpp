@@ -21,9 +21,10 @@ namespace jc
         return val;
     }
 
-    inline std::vector<std::string_view> split(std::string_view input, std::string_view delim)
+    using split_t = std::vector<std::string_view>;
+    inline split_t split(std::string_view input, std::string_view delim)
     {
-        std::vector<std::string_view> result;
+        split_t result;
 
         auto search_start = size_t{0};
         auto next_split   = input.find(delim, search_start);

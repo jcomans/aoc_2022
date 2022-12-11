@@ -1,18 +1,16 @@
 #ifndef JC_FILE
 #define JC_FILE
 
-#include <iterator>
 #include <fstream>
+#include <iterator>
 #include <string>
 
 namespace jc
 {
-    /// <summary>
     /// A class that can read a full line from an input stream
-    /// </summary>
     class Line
     {
-    public:
+      public:
         friend std::istream& operator>>(std::istream& is, Line& line)
         {
             return std::getline(is, line.data_);
@@ -21,34 +19,39 @@ namespace jc
         auto length() const { return data_.length(); }
         const auto& str() const { return data_; }
 
-    private:
+      private:
         std::string data_;
     };
 
-    /// <summary>
-    /// A simple file read wrapper targetted at reading files line by line (in a range based for)
-    /// </summary>
+    /// A simple file read wrapper targetted at reading files line by line
     class File
     {
-    public:
-        File(const char* file_name)
-            : file_{ std::ifstream(file_name) }
+      public:
+        File(const char* file_name) : file_{std::ifstream(file_name)} {}
+
+        std::istream_iterator<Line> begin() { return std::istream_iterator<Line>(file_); }
+
+        std::istream_iterator<Line> end() { return std::istream_iterator<Line>(); }
+
+        bool stripLine()
         {
+            std::string line;
+            if (std::getline(file_, line))
+                return true;
+
+            return false;
         }
 
-        std::istream_iterator<Line> begin()
+        std::string getLine()
         {
-            return std::istream_iterator<Line>(file_);
+            std::string line;
+            std::getline(file_, line);
+            return line;
         }
 
-        std::istream_iterator<Line> end()
-        {
-            return std::istream_iterator<Line>();
-        }
-
-    private:
+      private:
         std::ifstream file_;
     };
-}
+} // namespace jc
 
 #endif // !JC_FILE
